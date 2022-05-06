@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<title>CHAT</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	<link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+	<div class="wraper">
+		<div class="conteyner">
+			<template id="message__item-clone">
+				<div class="chat__conteyner">
+					<div class="chat__message">
+						<div class="chat__text description-text"> </div>
+						<div class="chat__message-time description-time"></div>
+					</div>
+				</div>
+			</template>
+			<div class="settings">
+				<div class="settings__button">Настройки</div>
+				<div class="settings__button-out">Войти</div>
+			</div>
+			<div class="chat">
+				<div class="chatContainer"></div>
+				<!-- <div class="chat__conteyner">
+					<div class="chat__message">
+						<div class="chat__text">Я: Добрый день!</div>
+						<div class="chat__message-time">18:45</div>
+					</div>
+				</div>
+				<div class="chat__conteyner">
+					<div class="chat__message">
+						<div class="chat__text">Собеседник мой: добрый день!</div>
+						<div class="chat__message-time">18:45</div>
+					</div>
+				</div> -->
+				<!-- <div class="chat__message">
+						<div class="chat__text"> Собеседник мой: А это второе и, кажется, оно очень длинное, чтобы поместиться
+							на
+							одной строке</div>
+						<div class="chat__message-time">18:45</div>
+					</div>
+					<div class="chat__message">
+						<div class="chat__text">Я: Добрый день!</div>
+						<div class="chat__message-time">18:45</div>
+					</div> -->
+			</div>
+			<form action="#" class="send-message-form">
+				<div class="send-message">
+					<input type="text" class="send-message__input" placeholder="сообщение..">
+					<button class="send-message__button">-></button>
+			</form>
+
+			<div class="popup-setting popup">
+				<div class="popup-setting__conteyner">
+					<div class="popup-setting__body">
+						<div class="popup-setting__title">
+							<div class="popup-setting__setting">Настройки</div>
+							<div class="popup-setting__close-img">
+								<img src="/src/img/+.png" alt="крестик">
+							</div>
+						</div>
+						<div class="popup-setting__name">Имя в чате</div>
+						<form action="#" class="popup-setting-form">
+							<div class="popup-setting__add-name">
+								<input type="text" class="popup-setting__input-name" placeholder="Введите имя">
+								<button class="popup-setting__button-send ">-></button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="popup-authorization popup">
+				<div class="popup-authorization__conteyner">
+					<div class="popup-authorization__body">
+						<div class="popup-authorization__title">
+							<div class="popup-authorization__setting">Авторизация</div>
+							<div class="popup-authorization__close-img">
+								<img src="/src/img/+.png" alt="крестик">
+							</div>
+						</div>
+						<div class="popup-authorization__email">Почта:</div>
+						<form action="#" class="popup-authorization-form">
+							<div class="popup-authorization__add-mail">
+								<input type="text" class="popup-authorization__input-mail" placeholder="Введите почту">
+								<button class="popup-authorization__button-code">Получить код</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="popup-confirmation popup">
+				<div class="popup-confirmation__conteyner">
+					<div class="popup-confirmation__body">
+						<div class="popup-confirmation__title">
+							<div class="popup-confirmation__setting">Подтверждение</div>
+							<div class="popup-confirmation__close-img">
+								<img src="/src/img/+.png" alt="крестик">
+							</div>
+						</div>
+						<div class="popup-confirmation__code">Код:</div>
+						<form action="#" class="popup-confirmation-form">
+							<div class="popup-confirmation__receiving-code">
+								<input type="text" class="popup-confirmation__input-code">
+								<button class="popup-authorization__button-entrance">Войти</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/src/constans.js" type="module"></script>
+		<script src="/src/utils.js" type="module"></script>
+		<script src="/src/main.js" type="module"></script>
+</body>
