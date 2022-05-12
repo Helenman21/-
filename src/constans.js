@@ -50,4 +50,8 @@ export const storage = {
 		return JSON.parse(localStorage.getItem('id'));
 	}
 }
-// export const socket = new WebSocket(`ws://mighty-cove-31255.herokuapp.com/websockets?eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imxpdl82MUBtYWlsLnJ1IiwiaWF0IjoxNjUxMjI3NDA5LCJleHAiOjE2NTE2NzM4MDl9.TCm8ow-Xc0Vv0e7vNXF_BxO8O5Trnk8SPVaOo1qanLY`);
+export const API = {
+	apiUser: 'https://mighty-cove-31255.herokuapp.com/api/user',
+	apiMessage: 'https://mighty-cove-31255.herokuapp.com/api/messages',
+	apiMe: 'https://mighty-cove-31255.herokuapp.com/api/user/me'
+}

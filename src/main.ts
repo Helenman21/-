@@ -1,12 +1,14 @@
+import { MessageData } from './types'
 import {
 	UI_ELEMENT_BLOCK_SETTING, UI_ELEMENT_BLOCK_CHAT, UI_ELEMENT_BLOCK_SEND_MESSAGE, UI_ELEMENTS_BLOCK_SETTING,
 	UI_ELEMENT_POPUP_SETTING, UI_ELEMENTS_POPUP_SETTING, UI_ELEMENT_POPUP_AUTORIZATION, UI_ELEMENTS_POPUP_AUTORIZATION,
 	UI_ELEMENT_POPUP_CONFIRMATION, UI_ELEMENTS_POPUP_CONFIRMATION, UI_ELEMENTS_BLOCK_SEND_MESSAGE,
-	TEMPLATE_MESSAGE, storage, UI_ELEMENTS_BLOCK_CHAT, UI_ELEMENT_BLOCK_CHAT_WINDOW
+	TEMPLATE_MESSAGE, storage, UI_ELEMENTS_BLOCK_CHAT, UI_ELEMENT_BLOCK_CHAT_WINDOW, API
 } from './constans.js';
 import { addElement, openPopap, clozedPopap, resetForm, postData, patchData, handleError, getTime, alignElementLeft, markElement } from './utils.js'
-function createElement(messageData) {
-	const clone = TEMPLATE_MESSAGE.content.cloneNode(true);
+
+function createElement(messageData: MessageData): HTMLElement {
+	const clone = (TEMPLATE_MESSAGE as any).content.cloneNode(true);
 	const textMessage = clone.querySelector('.description-text');
 	textMessage.textContent = `${messageData?.name}: ${messageData?.text}`;
 	const time = clone.querySelector('.description-time');
@@ -16,9 +18,9 @@ function createElement(messageData) {
 	time.textContent = `${hour}${':'}${minut}`;
 	return clone
 };
+
 UI_ELEMENTS_BLOCK_SETTING.buttonSetting.addEventListener('click', (event) => {
 	openPopap(UI_ELEMENT_POPUP_SETTING)
-	console.log('работает')
 });
 UI_ELEMENTS_POPUP_SETTING.buttonCloseSetting.addEventListener('click', (event) => {
 	clozedPopap(UI_ELEMENT_POPUP_SETTING);
@@ -42,20 +44,25 @@ socket.onopen = function (e) {
 	console.log("[open] Соединение установлено");
 };
 socket.onmessage = function (event) {
-	// {"_id":"626fed9eb503280016afc3c3","text":"undefined","user":{"email":"maxim.anokhov@gmail.com","name":"Maxim"},"createdAt":"2022-05-02T14:41:34.178Z","updatedAt":"2022-05-02T14:41:34.178Z","__v":0}
 	//console.log(`[message] Данные получены с сервера: ${event.data}`);
-	const data = JSON.parse(event?.data)
+	try {
+		const data = JSON.parse(event?.data)
 
-	const messageData = {
-		id: data?._id,
-		name: data?.user?.name === NAME ? data?.user?.name : 'Елена',
-		email: data?.user?.email,
-		text: data?.text,
-		createdAt: data?.createdAt
+		const messageData = {
+			id: data?._id,
+			name: data?.user?.name === NAME ? data?.user?.name : 'Елена',
+			email: data?.user?.email,
+			text: data?.text,
+			createdAt: data?.createdAt
+		}
+		//console.log('messageData: ', messageData)
+		const elemClone = createMessage(messageData);
+		addElement(elemClone, UI_ELEMENT_BLOCK_CHAT);
 	}
-	//console.log('messageData: ', messageData)
-	const elemClone = createMessage(messageData);
-	addElement(elemClone, UI_ELEMENT_BLOCK_CHAT);
+	catch (e) {
+		console.log(e.name);
+		console.log(e.message);
+	}
 };
 
 socket.onclose = function (event) {
@@ -83,14 +90,14 @@ UI_ELEMENTS_POPUP_SETTING.formSetting.addEventListener('submit', (event) => {
 	const value = UI_ELEMENTS_POPUP_SETTING.input.value;
 	const token = storage.getToken();
 	clozedPopap(UI_ELEMENTS_POPUP_SETTING)
-	patchData('https://mighty-cove-31255.herokuapp.com/api/user', { name: value }, token)
+	patchData(API.apiUser, { name: value }, token)
 		.catch(e => console.log('error /api/user: ', e));
 })
 
 UI_ELEMENTS_POPUP_AUTORIZATION.formAutorization.addEventListener('submit', (event) => {
 	event.preventDefault();
 	const value = UI_ELEMENTS_POPUP_AUTORIZATION.input.value;
-	postData('https://mighty-cove-31255.herokuapp.com/api/user', { email: value })
+	postData(API.apiUser, { email: value })
 		.then((data) => {
 			//console.log(data); // JSON data parsed by `response.json()` call
 			clozedPopap(UI_ELEMENT_POPUP_AUTORIZATION);
@@ -113,7 +120,7 @@ UI_ELEMENTS_POPUP_CONFIRMATION.formConfirmation.addEventListener('submit', (even
 });
 showMessage()
 function showMessage() {
-	Promise.all([getMessage()])
+	Promise.all([getMessage(), getProfile()])
 		.then(([messages, profileData]) => {
 			console.log('messages in Promise.all: ', messages)
 			console.log('profileData in Promise.all: ', profileData)
@@ -127,8 +134,6 @@ function showMessage() {
 					email: item?.user?.email
 				}
 			})
-			//console.log('получаемый массив', messageList)
-			//messageList.reverse();
 			const temporaryArray = messageList.splice(0, 20)
 			currentMessageList = messageList;
 			renderMessageList(temporaryArray);
@@ -136,15 +141,10 @@ function showMessage() {
 }
 
 function addTwentyMessage() {
-	console.log('messageList in addTwentyMessage: ', currentMessageList);
 	if (currentMessageList?.length > 0) {
-		console.log('получаемый массив', currentMessageList)
 		const temporaryArray = currentMessageList.splice(0, 20);
-		console.log('временный массив до обнуления: ', temporaryArray)
 		renderMessageList(temporaryArray);
 		temporaryArray.length = 0;
-		console.log('временный массив после обнуления: ', temporaryArray)
-		console.log('получаемый массив - 20: ', currentMessageList)
 	}
 	if (currentMessageList?.length === 0) {
 		currentMessageList = null;
@@ -160,28 +160,33 @@ UI_ELEMENT_BLOCK_CHAT_WINDOW.addEventListener('scroll', (event) => {
 	console.log('этого', getHeightMessageContainer())
 	console.log('этого минус это', getHeightChatWindow())
 	const isTimeScroll = - getScrollChat() > (getHeightMessageContainer() - getHeightChatWindow());
-	console.log(isTimeScroll)
-	if (isTimeScroll && currentMessageList) {
+	const isValid = isTimeScroll && currentMessageList;
+	if (isValid) {
 		addTwentyMessage()
 	}
 
 })
 
-function renderMessageList(messageList) {
+type MessageList = MessageData[];
+
+function renderMessageList(messageList: MessageList): void {
 	messageList.forEach(message => {
 		const newMessage = createMessage(message);
 		addElement(newMessage, UI_ELEMENT_BLOCK_CHAT);
 	})
 }
-function createMessage(messageData) {
+
+// функция принимает MessageData, возвращает HTMLElement
+function createMessage(messageData: MessageData): HTMLElement {
 	const { text, name, createdAt, email } = messageData;
 	const clone = TEMPLATE_MESSAGE.content.cloneNode(true).querySelector('.chat__conteyner');
 	const textMessage = clone.querySelector('.description-text');
 	textMessage.textContent = `${name}: ${text}`;
 	const time = clone.querySelector('.description-time');
 	time.textContent = getTime(createdAt);
-	const clonemessage = clone.querySelector('.chat__message')
-	if (email === myEmail) {
+	const clonemessage = clone.querySelector('.chat__message');
+	const isValidEmail = email === myEmail;
+	if (isValidEmail) {
 		alignElementLeft(clone);
 		markElement(clonemessage)
 	}
@@ -189,7 +194,7 @@ function createMessage(messageData) {
 }
 
 function getMessage() {
-	return fetch('https://mighty-cove-31255.herokuapp.com/api/messages', {
+	return fetch(API.apiMessage, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -199,14 +204,13 @@ function getMessage() {
 		.then(handleError)
 		.then((res) => {
 			const messages = res?.messages;
-			console.log(messages)
 			return messages;
 		})
-		.catch(e => console.log('err: ', e))
+		.catch(e => console.log('err getMessage: ', e))
 }
 
 function getProfile() {
-	return fetch('https://mighty-cove-31255.herokuapp.com/api/user/me', {
+	return fetch(API.apiMe, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -215,7 +219,7 @@ function getProfile() {
 	})
 		.then(handleError)
 		.then((res) => {
-			console.log('это res: ', res)
+			console.log('это res getProfile: ', res)
 			const data = {
 				name: res?.name,
 				email: res?.email,
