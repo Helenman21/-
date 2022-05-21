@@ -1,21 +1,21 @@
-export function addElement(elem, node) {
+export function addElement(elem: HTMLElement, node: HTMLElement) {
 	node.prepend(elem);
 };
-export function openPopap(element) {
+export function openPopap(element: HTMLElement) {
 	element.classList.add('popup-open');
 	//window.addEventListener('keydown', checkEscButton);
 };
-export function markElement (element) {
+export function markElement (element: HTMLElement) {
 	element.classList.add('chat__message-change-color');
 }
-export function alignElementLeft(element) {
+export function alignElementLeft(element: HTMLElement) {
 	element?.classList?.add('alignment');
 }
-export function clozedPopap(element) {
+export function clozedPopap(element: HTMLElement) {
 	element.classList.remove('popup-open')
 	//window.removeEventListener('keydown', checkEscButton);
 };
-export function resetForm(elem) {
+export function resetForm(elem: HTMLFormElement) {
 	elem.reset()
 };
 export async function postData(url = '', data = {}) {
@@ -28,7 +28,7 @@ export async function postData(url = '', data = {}) {
 	});
 	return await handleError(response);
 };
-export async function patchData(url = '', data = {}, token) {
+export async function patchData(url = '', data = {}, token: string) {
 	const response = await fetch(url, {
 		method: 'PATCH',
 		headers: {
@@ -39,14 +39,14 @@ export async function patchData(url = '', data = {}, token) {
 	});
 	return await handleError(response);
 };
-export function handleError(res) {
+export function handleError(res: Response) {
 	if (res.ok) {
 		return res.json();
 	}
 	// если ошибка, отклоняем промис
 	return Promise.reject(`Ошибка: ${res.status}`);
 };
-export function getTime(dateString) {
+export function getTime(dateString: string) {
 	const date = new Date(dateString);
 	const hours = date.getHours();
 	const minut = date.getMinutes();
