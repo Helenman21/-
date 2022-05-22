@@ -1,30 +1,21 @@
-export function addElement(elem: HTMLElement, node: HTMLElement) {
+export function addElement(elem, node) {
 	node.prepend(elem);
 };
-export function openPopap(element: HTMLElement) {
-	const currentPopupElement:HTMLElement = document.querySelector('.popup-open');
+export function openPopap(element) {
 	element.classList.add('popup-open');
-	window.addEventListener('keydown', checkEscButton);
+	//window.addEventListener('keydown', checkEscButton);
 };
- function checkEscButton(evt) {
-	const keydownEscape = evt.key === 'Escape';
-	if (keydownEscape) {
-		const currentPopupElement:HTMLElement = document.querySelector('.popup-open');
-		clozedPopap(currentPopupElement);
-	}
-}
-
-export function markElement (element: HTMLElement) {
+export function markElement (element) {
 	element.classList.add('chat__message-change-color');
 }
-export function alignElementLeft(element: HTMLElement) {
+export function alignElementLeft(element) {
 	element?.classList?.add('alignment');
 }
-export function clozedPopap(element: HTMLElement) {
+export function clozedPopap(element) {
 	element.classList.remove('popup-open')
-	window.removeEventListener('keydown', checkEscButton);
+	//window.removeEventListener('keydown', checkEscButton);
 };
-export function resetForm(elem: HTMLFormElement) {
+export function resetForm(elem) {
 	elem.reset()
 };
 export async function postData(url = '', data = {}) {
@@ -37,7 +28,7 @@ export async function postData(url = '', data = {}) {
 	});
 	return await handleError(response);
 };
-export async function patchData(url = '', data = {}, token: string) {
+export async function patchData(url = '', data = {}, token) {
 	const response = await fetch(url, {
 		method: 'PATCH',
 		headers: {
@@ -48,14 +39,14 @@ export async function patchData(url = '', data = {}, token: string) {
 	});
 	return await handleError(response);
 };
-export function handleError(res: Response) {
+export function handleError(res) {
 	if (res.ok) {
 		return res.json();
 	}
 	// если ошибка, отклоняем промис
 	return Promise.reject(`Ошибка: ${res.status}`);
 };
-export function getTime(dateString: string) {
+export function getTime(dateString) {
 	const date = new Date(dateString);
 	const hours = date.getHours();
 	const minut = date.getMinutes();
