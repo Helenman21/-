@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "ES6",
+		"removeComments": true,
+		"watch": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
